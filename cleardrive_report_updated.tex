@@ -1,0 +1,382 @@
+% ============================================================
+%  ClearDrive — Hybrid AI and Image Processing Dashboard
+%  for Low-Visibility Driving
+%
+%  DIP Course Project Report
+%  IIITDM Kancheepuram — CSE Department
+%
+%  Team: Gyan Chandra (CS23I1053)
+%        Vishal Singh  (CS23I1039)
+%        Ranveer Gautam (ME23B2031)
+%
+%  Compile on Overleaf: single pdflatex run is sufficient.
+% ============================================================
+
+\documentclass[12pt, a4paper]{article}
+
+% ── Page Layout ────────────────────────────────────────────
+\usepackage[
+  top=1in, bottom=1in,
+  left=1.1in, right=1.1in
+]{geometry}
+
+% ── Fonts & Encoding ───────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ── Mathematics ────────────────────────────────────────────
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ── Graphics ───────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+
+% ── Tables ─────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{array}
+
+% ── Colors & Boxes ─────────────────────────────────────────
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+% ── Section Styling ────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}
+  {\large\bfseries\color{blue!60!black}}
+  {\thesection.}{0.6em}{}[\titlerule]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{blue!40!black}}
+  {\thesubsection}{0.5em}{}
+
+% ── Code Listings ──────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  rulecolor=\color{gray!60},
+  breaklines=true,
+  keywordstyle=\color{blue!70!black}\bfseries,
+  commentstyle=\color{green!50!black}\itshape,
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=6pt,
+  language=Python
+}
+
+% ── Header / Footer ────────────────────────────────────────
+\usepackage{fancyhdr}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{ClearDrive — DIP Course Project}}
+\fancyhead[R]{\small\textit{IIITDM Kancheepuram}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Hyperlinks ─────────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!70!black,
+  citecolor=blue!70!black,
+  urlcolor=teal,
+  pdftitle={ClearDrive Project Report},
+  pdfauthor={Gyan Chandra, Vishal Singh, Ranveer Gautam}
+}
+
+% ── Line Spacing ───────────────────────────────────────────
+\usepackage{setspace}
+\setstretch{1.35}
+
+% ── Caption Styling ────────────────────────────────────────
+\usepackage{caption}
+\captionsetup{
+  font=small,
+  labelfont=bf,
+  skip=6pt
+}
+
+% ── Paragraph Spacing ──────────────────────────────────────
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% ============================================================
+%   TITLE PAGE (FIXED FOR EXACT 1 PAGE FIT)
+% ============================================================
+\begin{document}
+
+\begin{titlepage}
+  \begin{spacing}{1.1}
+  \centering
+  
+  \vspace*{-1.0cm}
+
+  \vspace{0.4cm}
+  {\LARGE \textbf{Indian Institute of Information Technology,}\\[5pt]
+           \textbf{Design and Manufacturing (IIITDM), Kancheepuram}}
+
+  \vspace{0.2cm}
+  {\large Department of Computer Science and Engineering}
+
+  \vspace{0.6cm}
+  \textcolor{blue!60!black}{\rule{\linewidth}{2pt}}
+  \vspace{0.3cm}
+
+  {\Huge \textbf{ClearDrive}}\\[8pt]
+  {\Large Distributed Hybrid AI \& Image Processing Dashboard\\
+          for Low-Visibility Driving}
+
+  \vspace{0.3cm}
+  \textcolor{blue!60!black}{\rule{\linewidth}{2pt}}
+
+  \vspace{0.6cm}
+  {\large \textbf{Digital Image Processing (DIP)\\Course Project Report}}
+
+  \vspace{0.6cm}
+  \begin{tcolorbox}[
+    colback=blue!5!white,
+    colframe=blue!50!black,
+    width=0.85\linewidth,
+    arc=4pt
+  ]
+    \centering
+    \begin{tabular}{lll}
+      \toprule
+      \textbf{Name} & \textbf{Roll No.} & \textbf{Programme}\\
+      \midrule
+      Gyan Chandra   & CS23I1053 & Dual Degree CSE\\
+      Vishal Singh   & CS23I1039 & Dual Degree CSE\\
+      Ranveer Gautam & ME23B2031 & B.Tech Smart Manufacturing\\
+      \bottomrule
+    \end{tabular}
+  \end{tcolorbox}
+
+  \vfill
+  {\large \textbf{April 2026}}
+  
+  \end{spacing}
+\end{titlepage}
+
+% ── Table of Contents ──────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+\subsection{The Problem: Driving in Bad Weather in India}
+
+Anyone who has driven on Indian highways during early-morning winter fog,
+or through monsoon mist on a hill-road, knows how dangerous it can get.
+When fog is heavy, you cannot see lane markings. You cannot tell if there is
+a pedestrian or a stalled truck twenty meters ahead. Night driving on
+unlit state highways is equally risky — headlights barely penetrate the
+darkness, and the contrast between the road and its surroundings becomes
+almost zero.
+
+This is not just a comfort issue — it is a proven safety crisis. A significant
+fraction of road accidents in India occur in low-visibility conditions. The root cause is simple:
+the human eye, and by extension, the camera-based systems inside modern cars,
+cannot \textit{see} well when fog scatters light or when there is very little
+ambient light at night.
+
+\subsection{Why We Built a Distributed Camera-Based System}
+
+Modern high-end cars use LiDAR (Light Detection and Ranging) sensors to build
+a 3D map of the surroundings. LiDAR is accurate and works in the dark, but it
+has two major problems for real-world Indian deployment:
+
+\begin{itemize}
+  \item \textbf{Cost:} A single automotive-grade LiDAR unit costs anywhere from
+  Rs.~3~lakhs to Rs.~30~lakhs.
+  \item \textbf{No semantic understanding:} LiDAR gives you a 3D point cloud.
+  It tells you \textit{where} objects are, but not \textit{what} they are. It
+  cannot read flat lane markings painted on the road. A camera sees \textit{colour and texture}.
+\end{itemize}
+
+Our solution, \textbf{ClearDrive}, uses only a standard dashcam (an RGB camera)
+combined with image processing algorithms. To make this infinitely scalable, we upgraded the architecture to act as a \textbf{Distributed AI Engine}. Instead of relying on a local heavy laptop bound to a physical camera cord, ClearDrive runs deep-learning processes remotely over HTTP, securely accessing live vehicle cameras through WebRTC-based constraints in real-time.
+
+\subsection{Our Approach: What ClearDrive Does}
+
+ClearDrive captures standard video frames continuously and does the following:
+\begin{enumerate}
+  \item Securely captures frames directly via the browser (WebRTC constraints) and passes them to the AI core engine.
+  \item It first \textbf{identifies what kind of bad weather} is present
+  (foggy, night, or clear) using a Hybrid Intelligence approach combining MobileNet predictions and physical lighting heuristics.
+  \item Based on that, it \textbf{cleans up the image} — removing the haze via aggressive Dark Channel Prior or boosting night brightness via multi-stage contrast amplification.
+  \item It uses a \textbf{deep learning segmentation model} as a fallback backup to highlight the drivable road area in a glass-green overlay when physical lines are lost.
+  \item The entire sequence is structurally compressed and rendered back instantly to the driver on a seamless \textbf{4-panel live smart dashboard}.
+\end{enumerate}
+
+% ============================================================
+\section{System Flow and Core Engine Architecture}
+% ============================================================
+
+\subsection{The Big Picture: System Flowchart and Architecture}
+
+In early prototypes, the system was a monolithic script strictly bound to a local \texttt{cv2.VideoCapture(0)} lock. This proved fundamentally restrictive for deploying cloud-based ADAS infrastructure. 
+
+We re-engineered the flow into a dual-layer client-server distribution loop. Figure~\ref{fig:flowchart} illustrates our comprehensive approach.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{flowchart.png}
+  \caption{ClearDrive System Flowchart: From WebRTC browser constraints to the Hybrid AI processing pipeline and 4-panel dashboard rendering.}
+  \label{fig:flowchart}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Continuous Edge Feed:} The client (the vehicle's dashboard browser) natively taps into the hardware optics using \texttt{navigator.mediaDevices.getUserMedia}. It captures continuous canvas-rendered snapshot blobs asynchronously.
+    \item \textbf{Vision API Node:} The AI processor intercepts the high-fidelity frames via a POST \texttt{/process-frame} pipeline. All processing (classification, DCP, Edge detection, metric updating) happens dynamically. The updated multi-quadrant image is then securely re-delivered via HTTP back to the dashboard stream.
+\end{itemize}
+
+\subsection{Stage 1: Hybrid AI Weather Classification (The Gatekeeper)}
+
+The first decision gate determines how a frame needs processing. We use \textbf{MobileNetV2}, a lightweight deep neural network, to output three strict predictions: \textbf{CLEAR}, \textbf{FOGGY}, or \textbf{NIGHT}.
+
+\textbf{The Hybrid Fallback Rule:} AI neural networks can sometimes unpredictably fail across edge cases—for example, misclassifying a pitch-black highway as ``FOGGY'' merely due to heavy uniform dark pixels tricking the pooling layers. To safeguard this, we engineered a \textbf{Hybrid Logic Override}: Before trusting the AI, the core calculates the \textit{Global Mean Pixel Brightness}. 
+If average brightness drops below a critical threshold ($\mu < 45$), the system categorically overrides the classifier and forces \textbf{NIGHT} mode processing. This ensures humans are not left visually stranded due to an unexpected AI misfire.
+
+\subsection{Stage 2: Frame Processing Based on Weather}
+
+Once the environment is locked in, the specific math is applied:
+\begin{tcolorbox}[
+  colback=green!5!white,
+  colframe=green!50!black,
+  title={\textbf{Mathematical Routing Logic (api.py)}},
+  arc=4pt
+]
+\begin{lstlisting}
+if weather_mode == "NIGHT":
+    processed_img = enhance_low_light(frame)
+
+elif weather_mode == "FOGGY":
+    # Dark Channel Prior pipeline with omega=0.97
+    processed_img = recover_image(img_float, t, A, t0=0.05)
+
+else:  # CLEAR
+    processed_img = frame.copy()
+\end{lstlisting}
+\end{tcolorbox}
+
+\subsection{Stage 3: Lane Detection (Edges + AI Backup)}
+
+After enhancement, classical edge detection isolates geometry:
+\begin{itemize}
+  \item \textbf{Canny Edge Detection + Hough Transform} connects boundary lines.
+  \item If these classical lines completely fail (e.g., fog wiping out road paint), the \textbf{LR-ASPP MobileNetV3} segmentation model activates and highlights the physical safe tarmac polygon completely dynamically.
+\end{itemize}
+
+% ============================================================
+\section{Practical Implementation Breakthroughs}
+% ============================================================
+
+This section explains the most interesting parts of our implementation regarding spatial improvement and deep learning integration.
+
+\subsection{Aggressive DCP Enhancement for Severe Fog}
+\label{sec:dcp}
+
+The heart of the fog removal system is based on the Koschmieder Haze Model. 
+Instead of standard visual correction tools, we mathematically reconstruct the original unscattered scene. 
+
+\begin{equation}
+  I(x) = J(x) \cdot t(x) + A \cdot (1 - t(x))
+  \label{eq:haze}
+\end{equation}
+
+Where $I(x)$ is the observed hazy image, $t(x)$ is the transmission map, and $A$ is the atmospheric light veil. 
+To guarantee safety in extreme white-out conditions (unlike standard photography apps), we tweaked the transmission constraint $\omega$ aggressively to \textbf{0.97}. This intentionally over-drives the dehaze strength because, for automotive safety, high contrast and minor visual saturation are preferable over remaining hazy elements. We subsequently pass the result into a CLAHE reinforcement pass to recover mid-tone detail lost during severe subtraction.
+
+\subsection{Multi-Stage Night Vision Enhancement}
+
+Rather than a simple brightness slider, our Night Enhancement relies on specific Contrast-Limited Adaptive Histogram Equalization (CLAHE). By converting the image to the CIE-LAB space, we process only the \textbf{L (Lightness)} component, shielding the structural color layers \textbf{(a, b)} from artificial noise explosion. With \texttt{clipLimit = 3.0}, headlights do not bloom uncontrollably while exposing shadow details in unlit Indian thoroughfares.
+
+\subsection{Ego-Vehicle Masking in AI Segmentation}
+
+Even after advanced dehazing, the deep learning \textbf{LR-ASPP} backup must know where the car is. Initially, the AI erroneously segmented the dashboard and hood of the vehicle as ``road surface''. 
+
+Our solution was a computationally free topological override. We systematically hard-masked out the top 60\% of the segmentation array, bounding the AI exclusively to the lower perceptual region. The AI instantly ignored the sky overhead, and lane highlighting stabilized perfectly onto real road boundaries below the horizon.
+
+\begin{lstlisting}
+road_mask[0 : int(height * 0.6), :] = 0  # Isolate active ground plane
+\end{lstlisting}
+
+% ============================================================
+\section{Dataset Details and Model Specifications}
+% ============================================================
+
+Because ClearDrive leverages real-time inference rather than training a localized model from scratch, our system is built upon robust, pre-trained datasets linked via \textit{Transfer Learning}:
+
+\begin{itemize}
+    \item \textbf{Weather Classification (MobileNetV2):} 
+    The backbone architecture was pre-trained on the \textbf{ImageNet} dataset (consisting of 1.2 million training images, 50,000 validation images, and 1,000 strict classes). We adapted the output vectors dynamically into our specific 3-class distribution (CLEAR, FOGGY, NIGHT).
+    \item \textbf{Semantic Road Segmentation (LR-ASPP MobileNetV3-Large):}
+    Trained on the highly detailed \textbf{COCO 2017 Dataset} (Common Objects in Context), which contains over 330,000 images and 1.5 million object instances mapped to 21 distinct classes. Our algorithm specifically targets and isolates the background/road classes (IDs 0 and 7) for path projection.
+    \item \textbf{Testing Data Split:}
+    The mathematical logic and boundary limits were dynamically fine-tuned and tested on \texttt{foggy\_dashcam.mp4}, a real-world Indian highway sequence comprising over \textbf{600+ consecutive frames} exhibiting varying levels of severe fog and low lighting, acting as our primary live validation testing split.
+\end{itemize}
+
+% ============================================================
+\section{Evaluation Metrics and Dashboard Validation}
+% ============================================================
+
+\subsection{The Continuous 4-Panel Stream}
+
+Instead of displaying one corrected image, we stitch an all-in-one HUD. This requires robust multithreading and fast canvas-drawing methods to render four synchronized spatial maps to the driver without stuttering:
+\begin{center}
+\begin{tabular}{cll}
+  \toprule
+  \textbf{Panel} & \textbf{Label in Dashboard} & \textbf{What It Shows}\\
+  \midrule
+  Top-Left     & RAW INPUT               & The raw data with real-time UI logging\\
+  Top-Right    & AI-ENHANCED             & Filtered physics (fog-removed/night-boosted)\\
+  Bottom-Left  & RELIABILITY HUD         & Visual depth heat map based on transmission\\
+  Bottom-Right & AI SEGMENT              & Glass-green topological driving polygon\\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Mathematical Performance Validation}
+
+We strictly monitor performance through internal endpoints.
+
+\subsubsection{Visibility Score}
+This score evaluates how much transmission depth remains clear. It answers: \textit{``What percentage of the road ahead is clearly visible?''} In clear daylight (detected CLEAR), the mathematical transmission map hits unity (1.0), equating perfectly to a 100.0\% Visibility score—serving as the ultimate algorithmic baseline. When thick fog kicks in, transmission maps dynamically darken, and visibility properly drops down proportionally beneath our 60\% threshold.
+
+\subsubsection{Contrast Gain}
+This algorithm evaluates image enhancement by testing standard deviation deviations between the raw feed and AI output. By pushing contrast up to 40\%+, we confirm that hidden vehicles within the shadow bands have successfully become mathematically discernible.
+
+% ============================================================
+\section{Team Contributions}
+% ============================================================
+
+Our project was an equal and collaborative engineering effort, effectively separated into distinct architectural tiers:
+
+\begin{itemize}
+    \item \textbf{Gyan Chandra (CS23I1053):} Engineered the Core FastAPI Python Backend. Implemented the Dark Channel Prior (DCP) spatial matrices manipulation, the CLAHE Lightness isolation logic, and the Hybrid Brightness mechanism to override neural misfires safely.
+    \item \textbf{Vishal Singh (CS23I1039):} Developed the React Vite Frontend logic and WebRTC distribution loop. Authored the asynchronous \texttt{getUserMedia} camera loop that continuously injects live local canvas-rendered blobs directly over HTTP to the AI API endpoints.
+    \item \textbf{Ranveer Gautam (ME23B2031):} Managed Deep Learning Integration and System Analytics. Finely tuned the inference thresholds (MobileNet \& LR-ASPP Segments), discovered and engineered the Ego-Vehicle topological array bounds (\texttt{road\_mask[0:int(height*0.6)] = 0}), and visualized the mathematical performance bounds on the 4-panel dashboard output.
+\end{itemize}
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+We built \textbf{ClearDrive}, a functional real-time distributed Driver Assistance system targeting low-visibility driving—a primary catalyst for accidents on Indian roads.
+
+By migrating away from linear, local-bound scripts toward a high-fidelity Continuous AI Feed model via React and FastAPI HTTP pipelines, we transitioned from an academic prototype to a highly modular, cloud-ready software mechanism. 
+
+The integration of \textbf{Classical DIP algorithms} (aggressive $\omega$-based DCP, LAB-based CLAHE) working synchronously alongside \textbf{Deep Learning classifiers} (MobileNetV2, LR-ASPP) showcases that raw intelligence isn't enough; the surrounding engineering dictates performance. For example, the incorporation of the \textbf{Hybrid Brightness Override} secured night driving from neural net misfires, while the \textbf{Ego-Vehicle Topological Mask} saved significant processing overhead while curing false positives.
+
+Quantitatively, the software is primed for edge-hardware integration, processing real-time telemetry safely while keeping strict analytical tabs on its own operational fidelity. It reflects a robust, scalable computer-vision pipeline built to keep humans safe when their own eyes cannot.
+
+\end{document}
